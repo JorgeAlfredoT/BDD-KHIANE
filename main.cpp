@@ -27,6 +27,17 @@ namespace functionsSupport{
 	}
 }
 
+void verificar_tipaje(int iop){
+	if(cin.fail()){
+		cout << "new iop: ";cin >> iop;
+		verificar_tipaje(iop);
+	}
+	else{
+		return;
+	}
+}
+
+
 int main(){
 
 	// vavriables a utilizarse en el desarrollo.
@@ -46,7 +57,20 @@ int main(){
 	do{
 		functionsSupport::clear();
 		functionsSupport::Menu();
-		cin >> iop;
+		bool ver = true;
+		int cont = 0;
+		do{
+			cin.clear();
+			if(cont > 0) cin.ignore(1024, '\n');
+			cout << "introduce un numero: ";
+			cout << cont << endl;
+			cin >> iop;
+			cont++;
+			if( !cin.fail() ){
+				ver = false;
+			}
+		}while( ver );
+
 		switch(iop){
 			case 1:
 				functionsSupport::clear();
@@ -56,7 +80,7 @@ int main(){
 					/////////////////////////////////////////////////////// -verifica si es que ya existe el registro--
 
 					salida_ind.open("index.txt", ios::in);
-					while(salida_ind.read( (char*) &aux_ind, sizeof(aux_ind)) != 0){
+					while(salida_ind.read( (char*) &aux_ind, sizeof(aux_ind)) ){ // MODIFIED HERE 1
 						if( jugador1.getDni() == aux_ind.getIndex() ){
 							repeat = true;
 							break;
@@ -101,12 +125,12 @@ int main(){
 
 				cout << "introduzca el DNI del jugador a eliminar del club: "; cin>> iclave;
 
-				while(salida_ind.read( (char*) &ind, sizeof(ind)) != 0){ // elimina ese campo
+				while(salida_ind.read( (char*) &ind, sizeof(ind))){ // elimina ese campo // MODIFIED HERE 2
 					if(ind.getIndex() != iclave)
 						entrada_ind.write( (char*) &ind, sizeof(ind) );
 				}
 
-				while( salida_pri.read( (char*) &jugador1, sizeof(jugador1) ) != 0 ){// elimina ese campo
+				while( salida_pri.read( (char*) &jugador1, sizeof(jugador1) ) ){// elimina ese campo // MODIFIED HERE 3
 					if(jugador1.getDni() != iclave)
 						entrada_pri.write( (char*) &jugador1,sizeof(jugador1) );
 				}
@@ -127,7 +151,7 @@ int main(){
 				salida_ind.open("index.txt",ios::in);
 				cout << "\n\t\tIntrodusca el DNI del jugador a consultar -->  ", cin >> iclave;
 
-				while(salida_ind.read( (char*) &ind, sizeof(ind)) != 0){ // buscara el dni en la tabla index
+				while(salida_ind.read( (char*) &ind, sizeof(ind))){ // buscara el dni en la tabla index // MODIFIED HERE 4
 					if(ind.getIndex() == iclave){
 						encontrado = ind.getPosition();
 						entro = true;
@@ -154,7 +178,7 @@ int main(){
 
 				cout << "\n\t\tDNI del jugador a modificar -->  "; cin >> iclave;
 
-				while(salida_pri.read( (char*) &jugador1, sizeof(jugador1) ) != 0 ){ // modifica la tabla principal
+				while(salida_pri.read( (char*) &jugador1, sizeof(jugador1) )){ // modifica la tabla principal // MODIFIED HERE 5
 					if(jugador1.getDni() == iclave){
 						jugador1.modificar();
 						entrada_pri.write( (char*)& jugador1, sizeof(jugador1) );
@@ -171,7 +195,7 @@ int main(){
 			case 6:
 				functionsSupport::clear();
 				salida_pri.open("principal.txt", ios::in);
-				while( salida_pri.read( (char*)&jugador1, sizeof(jugador1) ) != 0){
+				while( salida_pri.read( (char*)&jugador1, sizeof(jugador1) )){ // MODIFIED HERE 6
 					jugador1.datos_constantes();
 				}
 				cout << "\n\n\t\t\t\tContinuar (Caracter) -->  "; cin >> cont;
